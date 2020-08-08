@@ -17,7 +17,7 @@
 
 #define PORT     3456 //change the port if you want
 #define MAXLINE 1024
-#define IP_ADDR "10.0.20.7" //please change the IP address
+#define IP_ADDR "10.0.20.7" //please change the IP address, change to 127.0.0.1 for local testing e.g. virtualbox or vmware
 using namespace std::chrono;
 using namespace std;
 
