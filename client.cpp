@@ -57,34 +57,31 @@ int main() {
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(PORT);
     servaddr.sin_addr.s_addr = inet_addr(IP_ADDR);
-    struct timeval time1;
-    struct timeval time2;
-    struct timespec starttime, finishtime;
-    gettimeofday(&time1, NULL);
-    double t1 = time1.tv_sec;
-    std::cout << "t2 and t1: " <<t1<<"\n";
+   // struct timeval time1; 
+   // struct timeval time2;
+    struct timespec starttime, finishtime; //setup the start time and finish time for RTT
+   // gettimeofday(&time1, NULL);            
+   // double t1 = time1.tv_sec;
+   // std::cout << "t2 and t1: " <<t1<<"\n";
     //double t1 = time1.tv_usec;
-    clock_gettime(CLOCK_REALTIME, &starttime);
+    clock_gettime(CLOCK_REALTIME, &starttime);  // get the start time
 
     int i = 0;
     int x = 0;
-    while(i<1000){
+    while(i<1000){ 
 
-
-    //auto start = high_resolution_clock::now();
-
-    s = sendto(sockfd, (const char *)hello, 9000 ,MSG_CONFIRM, (const struct sockaddr *) &servaddr,sizeof(servaddr));
+    s = sendto(sockfd, (const char *)hello, 9000 ,MSG_CONFIRM, (const struct sockaddr *) &servaddr,sizeof(servaddr)); // bind to all the information to the socket and send to the server
     //s = sendto(sockfd, buff, 1024,MSG_CONFIRM, (const struct sockaddr *) &servaddr,sizeof(servaddr));
-    cout << "byte: " << s << "\n";
+    cout << "byte: " << s << "\n";  //print how many bytes have sent to the server
     if(s < 0 ){
     	perror("Sendto error: ");
     	exit(1);
     } else{
-    	totalbyte += s;
+    	totalbyte += s; //caluclate how many bytes have been sent to the server
 
     }
 
-    r = recvfrom(sockfd, (char *)buffer, MAXLINE,MSG_WAITALL, (struct sockaddr *) &servaddr,&len);
+    r = recvfrom(sockfd, (char *)buffer, MAXLINE,MSG_WAITALL, (struct sockaddr *) &servaddr,&len); //receive reply message from the server
     if (r < 0){
     	perror("Recvfrom error: ");
     	exit(1);
@@ -92,7 +89,7 @@ int main() {
     buffer[r] = '\0';
 
 
-    std::cout << "Reply from: " << inet_ntoa(servaddr.sin_addr) << " " << "Port: " << ntohs(servaddr.sin_port) << " " << "Message: " << buffer << " " << "\n";
+    std::cout << "Reply from: " << inet_ntoa(servaddr.sin_addr) << " " << "Port: " << ntohs(servaddr.sin_port) << " " << "Message: " << buffer << " " << "\n"; //print out the receive message
 
     i++;
 
@@ -100,18 +97,18 @@ int main() {
     }
 
     close(sockfd);
-    clock_gettime(CLOCK_REALTIME, &finishtime);
-    gettimeofday(&time2, NULL);
+    clock_gettime(CLOCK_REALTIME, &finishtime); //setup the finish time
+    //gettimeofday(&time2, NULL);
 
-    double t2 = time2.tv_sec;
-    cout << "finishtime: " << finishtime.tv_nsec << "\n";
-    cout << "starttime: " << starttime.tv_nsec << "\n";
-    cout << "Totalbyte: " << totalbyte << "\n";
+   // double t2 = time2.tv_sec;
+    cout << "finishtime: " << finishtime.tv_nsec << "\n"; //print out the finsh time in nanosec
+    cout << "starttime: " << starttime.tv_nsec << "\n";   //print out the start time in nanosec
+    cout << "Totalbyte: " << totalbyte << "\n";           //print out the total bytes have sent to the server
     //cout << "t2 and t1: " << t2 <<" "<<t1<<"\n";
-    double t3 =  (finishtime.tv_nsec -  starttime.tv_nsec) * 1e-9;
-    cout << "gettimeofday: " << t3<<"\n";
-    Mbs = (totalbyte*1e-6)/t3;
-    cout << "Throughput: " << Mbs << "Mbs"<< "\n";
+    double t3 =  (finishtime.tv_nsec -  starttime.tv_nsec) * 1e-9;   //find out the time elapsed and convert to second
+    cout << "gettimeofday: " << t3<<"\n";                       //print the elapsed time
+    Mbs = (totalbyte*1e-6)/t3;                           //total bytes convert to megabytes then divide by elapsed time = Mbs
+    cout << "Throughput: " << Mbs << "Mbs"<< "\n";       
     return 0;
 
 }
