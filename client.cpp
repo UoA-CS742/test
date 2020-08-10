@@ -15,9 +15,10 @@
 #include <sys/time.h>
 #include <math.h>
 
+
 #define PORT     3456 //change the port if you want
 #define MAXLINE 1024
-#define IP_ADDR "0.0.0.0" //please change the IP address, change to 127.0.0.1 for local testing e.g. virtualbox or vmware
+#define IP_ADDR "10.0.20.7" //please change the IP address, change to 127.0.0.1 for local testing e.g. virtualbox or vmware
 using namespace std::chrono;
 using namespace std;
 
@@ -25,7 +26,7 @@ using namespace std;
 int main() {
     int sockfd;
     char buffer[MAXLINE];
-    const char *hello = "Why you pick Yasuo on my BO5?";
+    const char *hello = "ALL MID?";
     char *data;
     int packetsize = 10000000; //10MB
     struct sockaddr_in  servaddr;
@@ -33,7 +34,7 @@ int main() {
     int s;
     int *optval;
     int totalbyte = 0;
-    double Mbs = 0;
+    double MBs = 0;
     double totaltime = 0;
     const size_t defaultSendLength = 1024 * 10 * 50;
     char buff[defaultSendLength];
@@ -68,10 +69,12 @@ int main() {
 
     int i = 0;
     int x = 0;
-    while(i<1000){ 
-    cout << "byte: " << servaddr.sin_addr.s_addr << "\n";  //print how many bytes have sent to the server
-    
-    s = sendto(sockfd, &hello, 9000 ,MSG_CONFIRM, (const struct sockaddr *) &servaddr,sizeof(servaddr)); // bind to all the information to the socket and send to the server
+    auto start = std::chrono::system_clock::now();
+    auto end = std::chrono::system_clock::now();
+    while((std::chrono::duration_cast<std::chrono::seconds>(end - start).count() != 1)){
+    end = std::chrono::system_clock::now();
+    //cout << "byte: " << servaddr.sin_addr.s_addr << "\n";  //print how many bytes have sent to the server
+    s = sendto(sockfd, &hello, 1470 ,MSG_CONFIRM, (const struct sockaddr *) &servaddr,sizeof(servaddr)); // bind to all the information to the socket and send to the server
     //s = sendto(sockfd, buff, 1024,MSG_CONFIRM, (const struct sockaddr *) &servaddr,sizeof(servaddr));
     cout << "byte: " << s << "\n";  //print how many bytes have sent to the server
     if(s < 0 ){
@@ -88,8 +91,6 @@ int main() {
     	exit(1);
     }
     buffer[r] = '\0';
-
-
     std::cout << "Reply from: " << inet_ntoa(servaddr.sin_addr) << " " << "Port: " << ntohs(servaddr.sin_port) << " " << "Message: " << buffer << " " << "\n"; //print out the receive message
 
     i++;
@@ -106,10 +107,10 @@ int main() {
     cout << "starttime: " << starttime.tv_nsec << "\n";   //print out the start time in nanosec
     cout << "Totalbyte: " << totalbyte << "\n";           //print out the total bytes have sent to the server
     //cout << "t2 and t1: " << t2 <<" "<<t1<<"\n";
-    double t3 =  (finishtime.tv_nsec -  starttime.tv_nsec) * 1e-9;   //find out the time elapsed and convert to second
+    double t3 = ((finishtime.tv_sec - starttime.tv_sec) ) +  ((finishtime.tv_nsec -  starttime.tv_nsec)/1.0e9);   //find out the time elapsed and convert to second
     cout << "gettimeofday: " << t3<<"\n";                       //print the elapsed time
-    Mbs = (totalbyte*1e-6)/t3;                           //total bytes convert to megabytes then divide by elapsed time = Mbs
-    cout << "Throughput: " << Mbs << "Mbs"<< "\n";       
+    MBs = (totalbyte*1e-6)*8/t3;                           //total bytes convert to megabytes then divide by elapsed time = Mbs
+    cout << "Throughput: " << MBs << "MBs"<< "\n";
     return 0;
 
 }
