@@ -17,7 +17,7 @@
 
 #define PORT     3456 //change the port if you want
 #define MAXLINE 1024
-#define IP_ADDR "10.0.20.7" //please change the IP address, change to 127.0.0.1 for local testing e.g. virtualbox or vmware
+#define IP_ADDR "0.0.0.0" //please change the IP address, change to 127.0.0.1 for local testing e.g. virtualbox or vmware
 using namespace std::chrono;
 using namespace std;
 
@@ -25,7 +25,7 @@ using namespace std;
 int main() {
     int sockfd;
     char buffer[MAXLINE];
-    char *hello = "Why you pick Yasuo on my BO5?";
+    const char *hello = "Why you pick Yasuo on my BO5?";
     char *data;
     int packetsize = 10000000; //10MB
     struct sockaddr_in  servaddr;
@@ -69,8 +69,9 @@ int main() {
     int i = 0;
     int x = 0;
     while(i<1000){ 
-
-    s = sendto(sockfd, (const char *)hello, 9000 ,MSG_CONFIRM, (const struct sockaddr *) &servaddr,sizeof(servaddr)); // bind to all the information to the socket and send to the server
+    cout << "byte: " << servaddr.sin_addr.s_addr << "\n";  //print how many bytes have sent to the server
+    
+    s = sendto(sockfd, &hello, 9000 ,MSG_CONFIRM, (const struct sockaddr *) &servaddr,sizeof(servaddr)); // bind to all the information to the socket and send to the server
     //s = sendto(sockfd, buff, 1024,MSG_CONFIRM, (const struct sockaddr *) &servaddr,sizeof(servaddr));
     cout << "byte: " << s << "\n";  //print how many bytes have sent to the server
     if(s < 0 ){
