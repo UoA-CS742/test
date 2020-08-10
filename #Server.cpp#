@@ -29,7 +29,7 @@
 
 #define MYPORT 3456        /* the port users will be connecting to */
 #define BACKLOG 10        /* how many pending connections queue will hold */
-#define  IP_ADDR      "0.0.0.0" //local IP address
+#define  IP_ADDR      "127.0.0.1" //local IP address
 int main()
 {
     int sockfd, new_fd;    /* listen on sock_fd, new connection on new_fd */
@@ -41,13 +41,12 @@ int main()
     int last_fd;        /* Thelast sockfd that is connected */
     socklen_t len;
     len=sizeof(their_addr);
-    const char *hello = "Because i am the BEST YASUO OCE";
+    const *hello = "Because i am the BEST YASUO OCE";
 
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
         perror("socket");
         exit(1);
     }
-
     last_fd = sockfd;
 
     my_addr.sin_family = AF_INET;    /* host byte order */
